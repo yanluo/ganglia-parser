@@ -10,14 +10,20 @@ from pprint import pprint
 import matplotlib.pyplot as plt
 import ConfigParser
 import string
+import decimal
 
 
 if len (sys.argv) < 2:
-    print 'Usage: python gangliaParser.py [target.conf]'
+    print 'Usage: python gangliaParser.py target.conf'
     sys.exit(2)
 else:
     filename = sys.argv[-1]
 
+print '-'*45
+print ' *** Ganglia Visualization Tool V-0.1.3 ***'
+print ''
+print ' Usage: python gangliaParser.py target.conf'
+print '-'*45
 
 cf = ConfigParser.ConfigParser()    
 cf.read(filename)
@@ -66,14 +72,14 @@ for index, value in enumerate (remove_duplicate):
         xaxis.append(xaxistmp)
         yaxis.append(yaxistmp)
 
-print '-'*60
 
-for index, value in enumerate (xaxis):
+graph_number = int (cf.get("node","number"))
+for index in xrange (0,graph_number):
     plt.figure(index)
     plt.title(remove_duplicate[index])
     plt.plot(xaxis[index], yaxis[index], 'k')
     plt.ylabel('Value')
-    plt.xlabel('Time')
+    plt.xlabel('Time (1 hour in total)')
     
 plt.show()
     
