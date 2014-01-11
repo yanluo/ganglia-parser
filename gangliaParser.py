@@ -67,7 +67,7 @@ else:
 
 ### Header
 print '-'*45
-print ' *** Ganglia Visualization Tool V-0.2 ***'
+print ' *** Ganglia JSON Parser Tool V - 0.2 ***'
 print ''
 print ' Usage: python gangliaParser.py target.conf'
 print '-'*45
@@ -99,7 +99,7 @@ for item in result:
         remove_duplicate.append(item)
 
 #print "set size =", len(seen)
-num_nodes = len(seen)
+#num_nodes = len(seen)
 
 # gererate timestamp for json directory and organize output files in it
 utc_datetime = datetime.datetime.utcnow()
