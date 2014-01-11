@@ -11,21 +11,29 @@ import matplotlib.pyplot as plt
 import ConfigParser
 import string
 import decimal
+import datetime
+import os
 
 def get_metric(remove_duplicate, metric):
+    global dir_str
     for index, value in enumerate (remove_duplicate):
         #print index, value
         ### Concatenate the final URL where JSON data locates
         jsonUrl = gangliaUrl + 'graph.php?r=hour&c=spark&h='+ value + '&v=0.0&m='+ metric +'&jr=&js=&json=1'
         print "--> from host: ", value 
 
-        ### Generate the JSON files
+        # retrieve json data
         response = urllib2.urlopen(jsonUrl)
         jsondata = json.load(response)
-        localFile = open( remove_duplicate[index] + '-' + metric +'.json', 'w' )
-        #print "data =", jsondata
-        json.dump(jsondata, localFile)
-        localFile.close()
+
+        ### Generate the JSON files
+        fnbase = dir_str + remove_duplicate[index] + '-' + metric
+        filename = fnbase +'.json' 
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        with open(filename, "w") as f:
+            json.dump(jsondata, f)
+            f.close()
 
         # check if json file is empty or contains "null"
         if jsondata == None:
@@ -43,11 +51,11 @@ def get_metric(remove_duplicate, metric):
 
         ### Plot JSON data to png figures
         plt.figure(index)
-        plt.title(remove_duplicate[index])
-        plt.plot(xaxis[index], yaxis[index], 'k')
+        plt.title(value)
+        plt.plot(xaxis, yaxis, 'k')
         plt.ylabel('Value '+ metric)
         plt.xlabel('Time (1 hour in total)')
-        plt.savefig(remove_duplicate[index] + '-' + metric +'.png')
+        plt.savefig(fnbase+'.png')
 
     return
 
@@ -93,12 +101,18 @@ for item in result:
 #print "set size =", len(seen)
 num_nodes = len(seen)
 
+# gererate timestamp for json directory and organize output files in it
+utc_datetime = datetime.datetime.utcnow()
+dir_str = "metrics-"+utc_datetime.strftime("%Y-%m-%d-%H:%M:%S/")
+print "Creating directory "+dir_str
+
 # get all the metrics one by one
 for metric in metrics.split(','):
-    print "Getting metric "+metric
+    print "Getting metric \""+metric+"\""
     get_metric(remove_duplicate, metric)
 
 ### Final printout message
 print '+'*45
 print '[SUCCESS] .JSON and .PNG files are saved!'
+print '[SUCCESS] to ./'+dir_str
 print '+'*45
