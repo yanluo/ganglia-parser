@@ -80,6 +80,6 @@ for index in xrange (0,graph_number):
     plt.plot(xaxis[index], yaxis[index], 'k')
     plt.ylabel('Value')
     plt.xlabel('Time (1 hour in total)')
-    
-plt.show()
+    plt.savefig(remove_duplicate[index]+'.png')
+
     
