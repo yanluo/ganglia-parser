@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import ConfigParser
 import string
 import decimal
+import os
 
 
 if len (sys.argv) < 2:
@@ -62,10 +63,15 @@ data = []
 xaxis = []
 yaxis = []
 
+### Create directory
+directory = './'+str(node_number)+'_nodes'
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
 ### Generate the JSON files
 for index in xrange (0, node_number):
     jsonContents.append( urllib2.urlopen(jsonUrl[index]).read() )
-    localFile = open( remove_duplicate[index] + '-' + metric +'.json', 'w' )
+    localFile = open( directory+'/'+remove_duplicate[index]+'-'+metric+'.json', 'w' )
     localFile.write(jsonContents[index])
     localFile.close()
 
@@ -88,7 +94,7 @@ for index in xrange (0, node_number):
     plt.plot(xaxis[index], yaxis[index], 'k')
     plt.ylabel('Value '+ metric)
     plt.xlabel('Time (1 hour in total)')
-    plt.savefig(remove_duplicate[index] + '-' + metric +'.png')
+    plt.savefig(directory+'/'+remove_duplicate[index]+'-'+metric+'.png')
 
 ### Final printout message
 print '+'*45
