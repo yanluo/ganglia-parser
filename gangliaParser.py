@@ -21,6 +21,7 @@ def get_metric(remove_duplicate, metric):
         ### Concatenate the final URL where JSON data locates
         jsonUrl = gangliaUrl + 'graph.php?r=hour&c=spark&h='+ value + '&v=0.0&m='+ metric +'&jr=&js=&json=1'
         print "--> from host: ", value 
+        print "Web view: ", jsonUrl
 
         # retrieve json data
         response = urllib2.urlopen(jsonUrl)
