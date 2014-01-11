@@ -45,7 +45,8 @@ def get_metric(remove_duplicate, metric):
         #print jsondata[0]
         rawdata = jsondata[0]['datapoints']
         #print "rawdata=", rawdata
-        for i in xrange (0, len(rawdata)):
+        #The last two points are usually meanless, so substrate 2
+        for i in xrange (0, len(rawdata)-2):
             xaxis.append(rawdata[i][1])
             yaxis.append(rawdata[i][0])
 
