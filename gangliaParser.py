@@ -22,7 +22,7 @@ else:
 
 ### Header
 print '-'*45
-print ' *** Ganglia Visualization Tool V-0.1.4 ***'
+print ' *** Ganglia JSON Parser Tool V - 0.1.5 ***'
 print ''
 print ' Usage: python gangliaParser.py target.conf'
 print '-'*45
@@ -56,7 +56,6 @@ for item in result:
 jsonUrl = []
 for index, value in enumerate (remove_duplicate):
     jsonUrl.append (gangliaUrl + 'graph.php?r=hour&c=spark&h='+ value + '&v=0.0&m='+ metric +'&jr=&js=&vl=KB&json=1')
-#print jsonUrl
 
 jsonContents = []
 data = []
@@ -81,20 +80,22 @@ for index in xrange (0, node_number):
     jsontmp = json.loads(jsonContents[index])
     data.append(jsontmp)
     if data[index] is not None:
-        for i in xrange (0, len(data[index][0]['datapoints'])):
+        # The last one or two points are usually not accurate, so -2
+        for i in xrange (0, len(data[index][0]['datapoints']) - 2):
             xaxistmp.append(data[index][0]['datapoints'][i][1])
             yaxistmp.append(data[index][0]['datapoints'][i][0])
         xaxis.append(xaxistmp)
         yaxis.append(yaxistmp)
 
 ### Plot JSON data to png figures
-for index in xrange (0, node_number):
-    plt.figure(index)
-    plt.title(remove_duplicate[index])
-    plt.plot(xaxis[index], yaxis[index], 'k')
-    plt.ylabel('Value '+ metric)
-    plt.xlabel('Time (1 hour in total)')
-    plt.savefig(directory+'/'+remove_duplicate[index]+'-'+metric+'.png')
+for index in xrange (0, len(xaxis)):
+    if xaxis[index] and yaxis [index] is not None:
+        plt.figure(index)
+        plt.title(remove_duplicate[index])
+        plt.plot(xaxis[index], yaxis[index], marker='o', linestyle='-', color='r',)
+        plt.ylabel('Value '+ metric)
+        plt.xlabel('Time (1 hour in total)')
+        plt.savefig(directory+'/'+remove_duplicate[index]+'-'+metric+'.png')
 
 ### Final printout message
 print '+'*45
