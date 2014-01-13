@@ -16,12 +16,13 @@ import os
 from os import listdir
 from os.path import isfile, join, isdir
 import shutil
-from optparse import OptionParser
+from optparse import OptionParser    
+import calendar
 
 def filter_dir(metricdir, metric):
     global filtered_dir
     onlyfile = [ f for f in listdir(metricdir) if isfile(join(metricdir,f)) ]
-    #print onlyfile
+    print onlyfile
     #onlyfile contains all metric files, 
     # then we look only the chosen metric file
     for fn in onlyfile:
@@ -49,7 +50,7 @@ def filter_dir(metricdir, metric):
                     # print "calling generate_png_time"
                     newpng_fullname = filtered_metric_dir+fn.replace("json","png")
                     generate_png_time( jsonfile_fullname, newpng_fullname, 
-                                      option_timestart, option_timeduration)
+                                      timestart_ts, option_timeduration)
 
 def generate_png_time(jsonfilename, pngfilename,
                       timestart, timeduration):
@@ -110,7 +111,7 @@ def filter_metric(jsonfile, metric):
     return False
 
 if len (sys.argv) < 2:
-    print 'Usage: python metricsFilter.py target.conf'
+    print 'Usage: python metricsFilter.py filter.conf'
     sys.exit(2)
 else:
     filename = sys.argv[-1]
@@ -141,9 +142,12 @@ cf.read(filename)
 
 # metrics is comma separated list
 metrics = cf.get("option","metrics")
-option_timestart = int(cf.get("option","time_start"))
+option_timestart = cf.get("option","time_start")
 option_timeduration = int(cf.get("option","time_duration"))
-#option_timeend = int(cf.get("option","time_end"))
+#option_timeend = int(cf.get("option","time_end")
+print option_timestart
+timestart_dt = datetime.datetime.strptime (option_timestart, "%Y/%m/%d %H:%M:%S")
+timestart_ts = calendar.timegm (timestart_dt.timetuple())
 
 mypath="./"
 onlydir = [ f for f in listdir(mypath) if isdir(join(mypath,f)) ]
