@@ -22,7 +22,6 @@ import calendar
 def filter_dir(metricdir, metric):
     global filtered_dir
     onlyfile = [ f for f in listdir(metricdir) if isfile(join(metricdir,f)) ]
-    print onlyfile
     #onlyfile contains all metric files, 
     # then we look only the chosen metric file
     for fn in onlyfile:
@@ -145,7 +144,7 @@ metrics = cf.get("option","metrics")
 option_timestart = cf.get("option","time_start")
 option_timeduration = int(cf.get("option","time_duration"))
 #option_timeend = int(cf.get("option","time_end")
-print option_timestart
+
 timestart_dt = datetime.datetime.strptime (option_timestart, "%Y/%m/%d %H:%M:%S")
 timestart_ts = calendar.timegm (timestart_dt.timetuple())
 
