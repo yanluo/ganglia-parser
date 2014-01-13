@@ -62,8 +62,7 @@ def generate_png_time(jsonfilename, pngfilename,
     tmpy=[]
     rawdata = jsondata[0]['datapoints']
     for i in xrange (0, len(rawdata)-2):
-        if rawdata[i][1] >= timestart and 
-        rawdata[i][1] <= timestart+timeduration:
+        if rawdata[i][1] >= timestart and rawdata[i][1] <= timestart+timeduration:
             tmpx.append(rawdata[i][1])
             tmpy.append(rawdata[i][0])
     json_data_file.close()
@@ -82,7 +81,7 @@ def generate_png_time(jsonfilename, pngfilename,
     plt.ylabel(metric)
     t = datetime.datetime.fromtimestamp(timestart)
     ts_str = t.strftime("%Y-%m-%d-%H:%M:%S/")
-    t = datetime.datetime.fromtimestamp(timeend)
+    t = datetime.datetime.fromtimestamp(timestart+timeduration)
     te_str = t.strftime("%Y-%m-%d-%H:%M:%S/")
     plt.xlabel('Time ('+ts_str+"---"+te_str+")")
     plt.savefig(pngfilename)
