@@ -49,10 +49,10 @@ def filter_dir(metricdir, metric):
                     # print "calling generate_png_time"
                     newpng_fullname = filtered_metric_dir+fn.replace("json","png")
                     generate_png_time( jsonfile_fullname, newpng_fullname, 
-                                      option_timestart, option_timeend)
+                                      option_timestart, option_timeduration)
 
 def generate_png_time(jsonfilename, pngfilename,
-                                      timestart, timeend):
+                      timestart, timeduration):
     global g_metric
     json_data_file=open(jsonfilename)
     jsondata = json.load(json_data_file)
@@ -62,7 +62,8 @@ def generate_png_time(jsonfilename, pngfilename,
     tmpy=[]
     rawdata = jsondata[0]['datapoints']
     for i in xrange (0, len(rawdata)-2):
-        if rawdata[i][1] >= timestart and rawdata[i][1] <= timeend:
+        if rawdata[i][1] >= timestart and 
+        rawdata[i][1] <= timestart+timeduration:
             tmpx.append(rawdata[i][1])
             tmpy.append(rawdata[i][0])
     json_data_file.close()
@@ -142,7 +143,8 @@ cf.read(filename)
 # metrics is comma separated list
 metrics = cf.get("option","metrics")
 option_timestart = int(cf.get("option","time_start"))
-option_timeend = int(cf.get("option","time_end"))
+option_timeduration = int(cf.get("option","time_duration"))
+#option_timeend = int(cf.get("option","time_end"))
 
 mypath="./"
 onlydir = [ f for f in listdir(mypath) if isdir(join(mypath,f)) ]
