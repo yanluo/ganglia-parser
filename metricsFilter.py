@@ -62,8 +62,10 @@ def generate_png_time(jsonfilename, pngfilename,
     tmpy=[]
     rawdata = jsondata[0]['datapoints']
     for i in xrange (0, len(rawdata)-2):
+        #print "raw timestamp=", rawdata[i][1]
+        #print "timestart=", timestart
         if rawdata[i][1] >= timestart and rawdata[i][1] <= timestart+timeduration:
-            tmpx.append(rawdata[i][1])
+            tmpx.append(rawdata[i][1]-timestart)
             tmpy.append(rawdata[i][0])
     json_data_file.close()
     #print tmpx
@@ -79,11 +81,7 @@ def generate_png_time(jsonfilename, pngfilename,
     plt.title(r[0])
     plt.plot(tmpx, tmpy, 'k')
     plt.ylabel(metric)
-    t = datetime.datetime.fromtimestamp(timestart)
-    ts_str = t.strftime("%Y-%m-%d-%H:%M:%S/")
-    t = datetime.datetime.fromtimestamp(timestart+timeduration)
-    te_str = t.strftime("%Y-%m-%d-%H:%M:%S/")
-    plt.xlabel('Time ('+ts_str+"---"+te_str+")")
+    plt.xlabel('Time in ms ( start time = '+option_timestart+' )')
     plt.savefig(pngfilename)
 
                         
@@ -102,6 +100,7 @@ def filter_metric(jsonfile, metric):
     # json data not empty
     # check if all zero
     rawdata = jsondata[0]['datapoints']
+    #print "len(rawdata)=", len(rawdata)
     for i in xrange (0, len(rawdata)-2):
         if rawdata[i][0] != 0:
             json_data_file.close()
@@ -142,7 +141,8 @@ cf.read(filename)
 # metrics is comma separated list
 metrics = cf.get("option","metrics")
 option_timestart = cf.get("option","time_start")
-option_timeduration = int(cf.get("option","time_duration"))
+# convert seconds to milliseconds
+option_timeduration = int(cf.get("option","time_duration"))*1000
 #option_timeend = int(cf.get("option","time_end")
 
 timestart_dt = datetime.datetime.strptime (option_timestart, "%Y/%m/%d %H:%M:%S")
